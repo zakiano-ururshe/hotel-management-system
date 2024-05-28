@@ -7,6 +7,7 @@
 
 using namespace std;
 
+
 // Base class for Person, demonstrates inheritance
 class Person {
 protected:
@@ -25,6 +26,7 @@ public:
     }
 };
 
+
 // Customer class derived from Person, demonstrates inheritance and polymorphism
 class Customer : public Person {
 private:
@@ -40,12 +42,15 @@ public:
 
     // Function to read all customers from the file and display their details
     void readCustomer() {
+        // Open the file for reading in binary mode
         ifstream file("customer.txt", ios::binary);
         if (!file) {
             cout << "File Not Found\n";
             return;
         }
 
+
+        // Temporary object to read customer details
         Customer c;
         cout << "Show All Hotel Booking: ";
         cout << "\n__\n\n";
@@ -63,8 +68,10 @@ public:
         cin.get();
     }
 
+
     // Function to write a new customer booking to the file
     void writeCustomer() {
+        // Open the file for writing in binary append mode
         ofstream file("customer.txt", ios::binary | ios::app);
         if (!file) {
             cout << "File could not be opened\n";
@@ -73,6 +80,7 @@ public:
 
         char ch;
         do {
+            // Create a new Customer object
             Customer c;
             cout << "Add a New Booking: ";
             cout << "\n_\n\n";
@@ -109,6 +117,7 @@ public:
             }
             cout << "Enter the number of days you will book: "; cin >> c.numOfDays;
 
+            // Write the customer details to the file
             file.write(reinterpret_cast<const char*>(&c), sizeof(c));
             cout << "\nAdd Another Booking ? (y/press any character such (n)): ";
             cin >> ch;
@@ -117,6 +126,7 @@ public:
         file.close();
     }
 
+
     // Function to search for a customer booking by ID
     void searchCustomer() {
         ifstream file("customer.txt", ios::binary);
@@ -124,6 +134,7 @@ public:
             cout << "File Not Found\n";
             return;
         }
+
 
         Customer c;
         cout << "Search about Booking by Id: ";
@@ -154,6 +165,7 @@ public:
         cin.get();
     }
 
+
     // Function to update the number of days booked for a customer
     void updateCustomer() {
         fstream file("customer.txt", ios::binary | ios::in | ios::out);
@@ -161,6 +173,7 @@ public:
             cout << "File Not Found\n";
             return;
         }
+
 
         Customer c;
         cout << "Update Booking: ";
@@ -174,6 +187,7 @@ public:
                 cout << "Enter your new number of days: ";
                 cin >> c.numOfDays;
 
+                // Update the customer record
                 int pos = file.tellg();
                 file.seekp(pos - sizeof(c), ios::beg);
                 file.write(reinterpret_cast<const char*>(&c), sizeof(c));
@@ -195,6 +209,7 @@ public:
         cin.get();
     }
 
+
     // Function to delete a customer booking record by ID
     void deleteRecordCustomer() {
         ifstream file("customer.txt", ios::binary);
@@ -204,6 +219,7 @@ public:
             return;
         }
 
+
         Customer c;
         cout << "Delete Booking: ";
         cout << "\n__\n\n";
@@ -211,6 +227,7 @@ public:
         cout << "Enter Id Of Customer To Delete: "; cin >> x;
         bool found = false;
 
+        // Copy all records to a temporary file except the one to be deleted
         while (file.read(reinterpret_cast<char*>(&c), sizeof(c))) {
             if (x != c.id) {
                 temp.write(reinterpret_cast<const char*>(&c), sizeof(c));
@@ -231,10 +248,12 @@ public:
         cin.get();
     }
 
+
     // Overloaded == operator to compare two customers by their ID
     bool operator==(const Customer& other) const {
         return this->id == other.id;
     }
+
 
     // Overloaded << operator to print customer details
     friend ostream& operator<<(ostream& os, const Customer& c) {
@@ -252,6 +271,7 @@ void displayList(const vector<T>& list) {
     }
 }
 
+
 // Room class to manage hotel rooms
 class Room {
 private:
@@ -267,6 +287,7 @@ public:
 
     // Function to write a new room to the file
     void writeRoom() {
+        // Open the file for writing in binary append mode
         ofstream file("rooms.txt", ios::binary | ios::app);
         if (!file) {
             cout << "File could not be opened\n";
@@ -275,6 +296,7 @@ public:
 
         char ch;
         do {
+            // Create a new Room object
             Room r;
             cout << "Add a New Room: ";
             cout << "\n_\n\n";
@@ -291,6 +313,7 @@ public:
             }
             cout << "Enter Room Price: "; cin >> r.room_price;
 
+            // Write the room details to the file
             file.write(reinterpret_cast<const char*>(&r), sizeof(r));
             cout << "\nAdd Another Room ? (y/press any character such (n)): ";
             cin >> ch;
@@ -299,14 +322,18 @@ public:
         file.close();
     }
 
+
     // Function to read all rooms from the file and display their details
     void readRoom() {
+        // Open the file for reading in binary mode
         ifstream file("rooms.txt", ios::binary);
         if (!file) {
             cout << "FILE NOT FOUND\n\n";
             return;
         }
 
+
+        // Temporary object to read room details
         Room r;
         cout << "Show all Rooms: ";
         cout << "\n__\n\n";
@@ -327,14 +354,18 @@ public:
         cin.get();
     }
 
+
     // Function to search for a room by room number
     void searchRoom() {
+        // Open the file for reading in binary mode
         ifstream file("rooms.txt", ios::binary);
         if (!file) {
             cout << "File Not Found\n";
             return;
         }
 
+
+        // Temporary object to store room details
         Room r;
         cout << "Search about room: ";
         cout << "\n__\n\n";
@@ -343,6 +374,8 @@ public:
         cout << "Enter Room Number: ";
         cin >> x;
 
+
+        // Search for the room in the file
         while (file.read(reinterpret_cast<char*>(&r), sizeof(r))) {
             if (x == r.room_no) {
                 found = true;
@@ -352,7 +385,8 @@ public:
                 else if (r.room_type == 'D' || r.room_type == 'd') cout << "Double\t";
                 if (r.room_view == 'S' || r.room_view == 's') cout << "Sea\t";
                 else if (r.room_view == 'P' || r.room_view == 'p') cout << "Pool\t";
-                else if (r.room_view == 'G' || r.room_view == 'g') cout << "Garden\t";
+                else if (r.room_view == 'G' || r.room_view == 'g') cout <<
+                    "Garden\t";
                 cout << r.room_price << "\n";
                 break;
             }
@@ -367,6 +401,7 @@ public:
         cin.get();
     }
 
+
     // Friend function to display room details
     friend ostream& operator<<(ostream& os, const Room& r) {
         os << "Room Number: " << r.room_no << ", Type: " << r.room_type
@@ -374,6 +409,7 @@ public:
         return os;
     }
 };
+
 
 // Function to display the main menu
 void menu() {
@@ -391,6 +427,7 @@ void menu() {
     cout << "8. Delete Booking Information\n";
     cout << "9. Exit\n";
 }
+
 
 int main() {
     Customer customer;
